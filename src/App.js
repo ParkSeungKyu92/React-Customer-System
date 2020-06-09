@@ -7,7 +7,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import  {withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
 //css 꾸미기
 const styles = theme => ({
@@ -19,8 +19,8 @@ const styles = theme => ({
   table: {
     minWidth : 1080
   }
+});
 
-})
 const customer = [
 {
   id    : 1,
@@ -33,24 +33,24 @@ const customer = [
 {
   id    : 2,
   image : "https://placeimg.com/64/64/2",
-  name  : "박정은",
-  birth : "960917",
-  gender: "여자",
-  job   : "개발자" 
+  name  : "김밥천국",
+  birth : "123456",
+  gender: "남자",
+  job   : "요리사" 
 },
 {
   id    : 3,
   image : "https://placeimg.com/64/64/3",
-  name  : "박세진",
-  birth : "950228",
-  gender: "여자",
-  job   : "IDC" 
+  name  : "짜파게티",
+  birth : "456789",
+  gender: "남자",
+  job   : "라면" 
 },
 ];
 
 class App extends Component{
   render(){
-    const {classes} = this.props;
+    const classes = this.props;
     return (
       <Paper className={classes.root}>
           <Table className={classes.table}>
@@ -73,6 +73,6 @@ class App extends Component{
   }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(App); //App에 props로 전달
 
 //map사용시 key 설정해줘야한다!
