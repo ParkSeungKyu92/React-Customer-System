@@ -21,34 +21,23 @@ const styles = theme => ({
   }
 });
 
-const customer = [
-{
-  id    : 1,
-  image : "https://placeimg.com/64/64/1",
-  name  : "박승규",
-  birth : "920717",
-  gender: "남자",
-  job   : "백수" 
-},
-{
-  id    : 2,
-  image : "https://placeimg.com/64/64/2",
-  name  : "김밥천국",
-  birth : "123456",
-  gender: "남자",
-  job   : "요리사" 
-},
-{
-  id    : 3,
-  image : "https://placeimg.com/64/64/3",
-  name  : "짜파게티",
-  birth : "456789",
-  gender: "남자",
-  job   : "라면" 
-},
-];
-
 class App extends Component{
+
+  state = {
+    customer : ""
+  }
+
+  componentDidMount() {//모든 component가 마운트가 되면 실행됨
+    this.callApi()
+      .then(res => this.setState({customer : res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
   render(){
     const classes = this.props;
     return (
@@ -65,7 +54,7 @@ class App extends Component{
               </TableRow>
             </TableHead>
             <TableBody>
-              {customer.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job}></Customer>); })}
+              {this.state.customer ? this.state.customer.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job}></Customer>); }) : ""}
             </TableBody>
           </Table>
       </Paper>
