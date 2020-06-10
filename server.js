@@ -11,8 +11,8 @@ app.get('/api/customers', (req, res) => {
         {
           id    : 1,
           image : "https://placeimg.com/64/64/1",
-          name  : "박승규",
-          birth : "920717",
+          name  : "신라면",
+          birth : "494949",
           gender: "남자",
           job   : "백수" 
         },
