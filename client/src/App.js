@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import {withStyles} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CustomerAdd from './Components/CustomerAdd';
 //css 꾸미기
 const styles = theme => ({
   root : {
@@ -28,11 +29,14 @@ const styles = theme => ({
 //
 class App extends Component{
 
-  state = {
-    customer : "",
-    completed : 0
+  constructor(props) {
+    super(props);
+    this.state = {
+      customer : "",
+      completed : 0
+    };
   }
-
+  
   progress() {
     const completed = this.state.completed;
     this.setState({completed : completed >= 100 ? 0 : completed + 1});
@@ -50,9 +54,21 @@ class App extends Component{
     const body = await response.json();
     return body;
   }
+
+  updateCustomer() {
+    this.setState({
+      customer : '',
+      completed : 0
+    });
+    this.callApi()
+      .then(res => this.setState({customer : res}))
+      .catch(err => console.log(err));
+  }
+
   render(){
     const classes = this.props;
     return (
+      <div>
       <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
@@ -63,10 +79,11 @@ class App extends Component{
                 <TableCell>생일</TableCell>
                 <TableCell>성별</TableCell>
                 <TableCell>직업</TableCell>
+                <TableCell>삭제</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.customer ? this.state.customer.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job}></Customer>); })
+              {this.state.customer ? this.state.customer.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} updateCustomer={this.updateCustomer.bind(this)}></Customer>); })
                : <TableRow>
                   <TableCell align="center" colSpan="6">
                     <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed}></CircularProgress>
@@ -75,6 +92,8 @@ class App extends Component{
             </TableBody>
           </Table>
       </Paper>
+      <CustomerAdd updateCustomer={this.updateCustomer.bind(this)}/>
+      </div>
     );
   }
 }

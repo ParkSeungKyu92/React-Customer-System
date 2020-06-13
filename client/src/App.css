@@ -1,3 +1,8 @@
 .gray-background {
   background: darkgray;
 }
+
+.minIamge {
+  width : '64px';
+  height: '64px';
+}
