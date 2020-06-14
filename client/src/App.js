@@ -10,18 +10,30 @@ import TableCell from "@material-ui/core/TableCell";
 import {withStyles} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomerAdd from './Components/CustomerAdd';
+import AppBarHeader from './Components/AppBarHeader.js';
+
+
 //css 꾸미기
 const styles = theme => ({
   root : {
     width : '100%',
-    marginTop : theme.spacing.uint * 3, //위쪽 여백 3의 가중치만큼
-    overflowX: "auto"
-  },
-  table: {
-    minWidth : 1080
+    minWidth : 1080,
   },
   progress : {
     margin : theme.spacing.uint * 2
+  },
+  tableHead : {
+    fontSize: '1.5rem'
+  },
+  paper: {
+    marginLeft : 18,
+    marginRight: 18
+  },
+  menu : {
+    marginTop : 15,
+    marginBottom : 15,
+    display : 'flex',
+    justifyContent : 'center'
   }
 });
 
@@ -33,7 +45,8 @@ class App extends Component{
     super(props);
     this.state = {
       customer : "",
-      completed : 0
+      completed : 0,
+      searchKeyword : ""
     };
   }
   
@@ -58,33 +71,48 @@ class App extends Component{
   updateCustomer() {
     this.setState({
       customer : '',
-      completed : 0
+      completed : 0,
+      searchKeyword : ""
     });
     this.callApi()
       .then(res => this.setState({customer : res}))
       .catch(err => console.log(err));
   }
 
+  handleSearchKeyword(value) {
+    this.setState({
+      searchKeyword : value
+    });
+  }
+
   render(){
-    const classes = this.props;
+    const filteredComponents = (data) => {
+      data = data.filter((c) => {
+        return c.name.indexOf(this.state.searchKeyword) > - 1;
+      });
+      return data.map((c) => {
+        return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} updateCustomer={this.updateCustomer.bind(this)}></Customer>); 
+      });
+    }
+    const {classes} = this.props;
+    const cellList = ["번호", "프로필 이미지", "이름", "생년월일", "성별", "직업", "삭제"];
+    var keyValue = 0;
     return (
-      <div>
-      <Paper className={classes.root}>
-          <Table className={classes.table}>
+      <div className={classes.root}>
+      <AppBarHeader searchKeyword={this.state.searchKeyword} handleSearchKeyword={this.handleSearchKeyword.bind(this)}/>
+      <div className={classes.menu}>
+        <CustomerAdd updateCustomer={this.updateCustomer.bind(this)}/>
+      </div>
+      <Paper className={classes.paper}>
+          <Table>
             <TableHead>
               <TableRow>
-                <TableCell>번호</TableCell>
-                <TableCell>이미지</TableCell>
-                <TableCell>이름</TableCell>
-                <TableCell>생일</TableCell>
-                <TableCell>성별</TableCell>
-                <TableCell>직업</TableCell>
-                <TableCell>삭제</TableCell>
+                {cellList.map(c => {return (<TableCell key={keyValue++} className={classes.tableHead}>{c}</TableCell>)})}
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.customer ? this.state.customer.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} updateCustomer={this.updateCustomer.bind(this)}></Customer>); })
-               : <TableRow>
+              {this.state.customer ? filteredComponents(this.state.customer) :
+               <TableRow>
                   <TableCell align="center" colSpan="6">
                     <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed}></CircularProgress>
                   </TableCell>
@@ -92,7 +120,6 @@ class App extends Component{
             </TableBody>
           </Table>
       </Paper>
-      <CustomerAdd updateCustomer={this.updateCustomer.bind(this)}/>
       </div>
     );
   }

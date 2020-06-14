@@ -33,6 +33,7 @@ app.get('/api/customers', (req, res) => {
     }
   );
 });
+
 app.use('/image', express.static('./upload')); //사용자는 image 폴더로 확인하고 실제 매핑은 ./upload
 
 app.post('/api/customers', upload.single('image'), function(req, res) {
@@ -45,8 +46,6 @@ app.post('/api/customers', upload.single('image'), function(req, res) {
   let params = [image, name, birth, gender, job];
   
   connection.query(sql, params, function(err, rows, fields) {
-    console.log(rows);
-    console.log(sql);
     res.send(rows);
   });
 });
@@ -54,11 +53,7 @@ app.post('/api/customers', upload.single('image'), function(req, res) {
 app.delete('/api/customer/:id', function(req, res) {
   let sql = "UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?";
   let params = [req.params.id];
-  console.log(params);
-  console.log(res);
   connection.query(sql, params, function(err, rows, fields) {
-    console.log(err);
-    console.log(rows);
     res.send(rows);
   });
 });
